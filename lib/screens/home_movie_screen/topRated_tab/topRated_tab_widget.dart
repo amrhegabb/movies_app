@@ -104,10 +104,16 @@ class _TopRatedWidgetState extends State<TopRatedWidget> {
             setState(() {
               if (WatchlistScreen.watchlist
                   .any((element) => element.title == widget.results.title)) {
-                MyDB.deletemovie(widget.results);
+                if (WatchlistScreen.watchlist.length == 1) {
+                  MyDB.deletemovie(widget.results);
+                  WatchlistScreen.watchlist = [];
+                } else {
+                  MyDB.deletemovie(widget.results);
+                }
               } else {
                 MyDB.insertMovie(widget.results);
               }
+
               widget.pressed = !widget.pressed;
               MyDB.getMovies();
             });

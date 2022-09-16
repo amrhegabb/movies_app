@@ -29,6 +29,9 @@ class MyDB {
     var querysnapshot = await getMoviesCollection().get();
     var documents = querysnapshot.docs.map((e) => e.data()).toList();
     documents.forEach((element) {
+      if (documents.isEmpty) {
+        WatchlistScreen.watchlist = [];
+      }
       WatchlistScreen.watchlist = documents;
     });
   }

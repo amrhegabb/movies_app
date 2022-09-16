@@ -14,7 +14,9 @@ class PopularTabWidget extends StatefulWidget {
 
 class _PopularTabWidgetState extends State<PopularTabWidget> {
   void initState() {
-    if (WatchlistScreen.watchlist
+    if (WatchlistScreen.watchlist.isEmpty) {
+      widget.pressed = false;
+    } else if (WatchlistScreen.watchlist
         .any((element) => element.title == widget.results.title)) {
       widget.pressed = true;
     }
@@ -22,11 +24,12 @@ class _PopularTabWidgetState extends State<PopularTabWidget> {
 
   @override
   Widget build(BuildContext context) {
+    MyDB.getMovies();
     return Stack(children: [
       Row(
         children: [
           Image.network(
-            'https://image.tmdb.org/t/p/w500' + '${widget.results.posterPath}',
+            'https://image.tmdb.org/t/p/w500' '${widget.results.posterPath}',
             width: 100,
             height: 150,
             fit: BoxFit.fill,
@@ -41,14 +44,20 @@ class _PopularTabWidgetState extends State<PopularTabWidget> {
         bottom: 105,
         child: IconButton(
           onPressed: () {
-            setState(() {
-              if (WatchlistScreen.watchlist
-                  .any((element) => element.title == widget.results.title)) {
+            if (WatchlistScreen.watchlist
+                .any((element) => element.title == widget.results.title)) {
+              if (WatchlistScreen.watchlist.length == 1) {
                 MyDB.deletemovie(widget.results);
+                WatchlistScreen.watchlist = [];
               } else {
-                MyDB.insertMovie(widget.results);
+                MyDB.deletemovie(widget.results);
               }
-              widget.pressed = !widget.pressed;
+            } else {
+              MyDB.insertMovie(widget.results);
+            }
+
+            widget.pressed = !widget.pressed;
+            setState(() {
               MyDB.getMovies();
             });
           },
